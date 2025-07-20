@@ -1,3 +1,14 @@
+--[[
+
+	Rayfield Interface Suite
+	by Sirius
+
+	shlex | Designing + Programming
+	iRay  | Programming
+	Max   | Programming
+
+]]
+
 if debugX then
 	warn('Initialising Rayfield')
 end
@@ -105,6 +116,7 @@ local useStudio = RunService:IsStudio() or false
 local settingsCreated = false
 local settingsInitialized = false -- Whether the UI elements in the settings page have been set to the proper values
 local cachedSettings
+--local prompt = useStudio and require(script.Parent.prompt) or loadWithTimeout('https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/prompt.lua')
 local request = (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request) or http_request or request
 
 
@@ -177,6 +189,30 @@ loadSettings()
 if debugX then
 	warn('Settings Loaded')
 end
+
+--if not cachedSettings or not cachedSettings.System or not cachedSettings.System.usageAnalytics then
+--	local fileFunctionsAvailable = isfile and writefile and readfile
+
+--	if not fileFunctionsAvailable and not useStudio then
+--		warn('Rayfield Interface Suite | Sirius Analytics:\n\n\nAs you don\'t have file functionality with your executor, we are unable to save whether you want to opt in or out to analytics.\nIf you do not want to take part in anonymised usage statistics, let us know in our Discord at sirius.menu/discord and we will manually opt you out.')
+--		analytics = true	
+--	else
+--		prompt.create(
+--			'Help us improve',
+--	            [[Would you like to allow Sirius to collect usage statistics?
+
+--<font transparency='0.4'>No data is linked to you or your personal activity.</font>]],
+--			'Continue',
+--			'Cancel',
+--			function(result)
+--				settingsTable.System.usageAnalytics.Value = result
+--				analytics = result
+--			end
+--		)
+--	end
+
+--	repeat task.wait() until analytics ~= nil
+--end
 
 if not requestsDisabled then
 	if debugX then
@@ -602,14 +638,12 @@ local TweenService = getService("TweenService")
 local Players = getService("Players")
 local CoreGui = getService("CoreGui")
 
--- Interface Management
-
 local Rayfield = useStudio and script.Parent:FindFirstChild('Rayfield') or game:GetObjects("rbxassetid://10804731440")[1]
 local buildAttempts = 0
 local correctBuild = false
 local warned
 local globalLoaded
-local rayfieldDestroyed = false -- True when RayfieldLibrary:Destroy() is called
+local rayfieldDestroyed = false
 
 repeat
 	if Rayfield:FindFirstChild('Build') and Rayfield.Build.Value == InterfaceBuild then
@@ -673,7 +707,10 @@ local dragOffsetMobile = 150
 Rayfield.DisplayOrder = 100
 LoadingFrame.Version.Text = Release
 
+-- Thanks to Latte Softworks for the Lucide integration for Roblox
 local Icons = useStudio and require(script.Parent.icons) or loadWithTimeout('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/refs/heads/main/icons.lua')
+-- Variables
+
 local CFileName = nil
 local CEnabled = false
 local Minimised = false
@@ -885,6 +922,7 @@ local function LoadConfiguration(Configuration)
 		else
 			warn("Rayfield | Unable to find '"..FlagName.. "' in the save file.")
 			print("The error above may not be an issue if new elements have been added or not been set values.")
+			--RayfieldLibrary:Notify({Title = "Rayfield Flags", Content = "Rayfield was unable to find '"..FlagName.. "' in the save file. Check sirius.menu/discord for help.", Image = 3944688398})
 		end
 	end
 
@@ -1594,7 +1632,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 	Topbar.Visible = false
 	Elements.Visible = false
 	LoadingFrame.Visible = true
-	
+
 	pcall(function()
 		if not Settings.ConfigurationSaving.FileName then
 			Settings.ConfigurationSaving.FileName = tostring(game.PlaceId)
@@ -2592,7 +2630,6 @@ function RayfieldLibrary:CreateWindow(Settings)
 			return InputSettings
 		end
 
-		-- Dropdown
 		function Tab:CreateDropdown(DropdownSettinRayfieldgs)
 			local Dropdown = Elements.Template.Dropdown:Clone()
 			if string.find(DropdownSettings.Name,"closed") then
@@ -2769,15 +2806,13 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 
 						local Success, Response = pcall(function()
-							DropdownSettings.Callback(DropdownSettings.CurrentOption)
+							DropdownSettings.Callback(DropdownSettings.CurrentOption[1])
 						end)
 
 						if not Success then
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 							Dropdown.Title.Text = "Callback Error"
-							print("Rayfield | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-							warn('Check docs.sirius.menu for help with Rayfield specific development.')
 							task.wait(0.5)
 							Dropdown.Title.Text = DropdownSettings.Name
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2860,7 +2895,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 
 				local Success, Response = pcall(function()
-					DropdownSettings.Callback(NewOption)
+					DropdownSettings.Callback(DropdownSettings.CurrentOption[1])
 				end)
 				if not Success then
 					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
@@ -3666,10 +3701,6 @@ end
 
 
 if useStudio then
-	-- run w/ studio
-	-- Feel free to place your own script here to see how it'd work in Roblox Studio before running it on your execution software.
-
-
 	local Window = RayfieldLibrary:CreateWindow({
 		Name = "Rayfield Example Window",
 		LoadingTitle = "Rayfield Interface Suite",
@@ -3780,8 +3811,6 @@ if useStudio then
 		CurrentValue = 40,
 		Flag = "Slider1dawd", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(Value)
-			-- The function that takes place when the slider changes
-			-- The variable (Value) is a number which correlates to the value the slider is currently at
 		end,
 	})
 
@@ -3809,60 +3838,16 @@ if useStudio then
 		MultipleOptions = false,
 		Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(Options)
-			--Window.ModifyTheme(Options[1])
-			-- The function that takes place when the selected option is changed
-			-- The variable (Options) is a table of strings for the current selected options
 		end,
 	})
-
-
-	--Window.ModifyTheme({
-	--	TextColor = Color3.fromRGB(50, 55, 60),
-	--	Background = Color3.fromRGB(240, 245, 250),
-	--	Topbar = Color3.fromRGB(215, 225, 235),
-	--	Shadow = Color3.fromRGB(200, 210, 220),
-
-	--	NotificationBackground = Color3.fromRGB(210, 220, 230),
-	--	NotificationActionsBackground = Color3.fromRGB(225, 230, 240),
-
-	--	TabBackground = Color3.fromRGB(200, 210, 220),
-	--	TabStroke = Color3.fromRGB(180, 190, 200),
-	--	TabBackgroundSelected = Color3.fromRGB(175, 185, 200),
-	--	TabTextColor = Color3.fromRGB(50, 55, 60),
-	--	SelectedTabTextColor = Color3.fromRGB(30, 35, 40),
-
-	--	ElementBackground = Color3.fromRGB(210, 220, 230),
-	--	ElementBackgroundHover = Color3.fromRGB(220, 230, 240),
-	--	SecondaryElementBackground = Color3.fromRGB(200, 210, 220),
-	--	ElementStroke = Color3.fromRGB(190, 200, 210),
-	--	SecondaryElementStroke = Color3.fromRGB(180, 190, 200),
-
-	--	SliderBackground = Color3.fromRGB(200, 220, 235),  -- Lighter shade
-	--	SliderProgress = Color3.fromRGB(70, 130, 180),
-	--	SliderStroke = Color3.fromRGB(150, 180, 220),
-
-	--	ToggleBackground = Color3.fromRGB(210, 220, 230),
-	--	ToggleEnabled = Color3.fromRGB(70, 160, 210),
-	--	ToggleDisabled = Color3.fromRGB(180, 180, 180),
-	--	ToggleEnabledStroke = Color3.fromRGB(60, 150, 200),
-	--	ToggleDisabledStroke = Color3.fromRGB(140, 140, 140),
-	--	ToggleEnabledOuterStroke = Color3.fromRGB(100, 120, 140),
-	--	ToggleDisabledOuterStroke = Color3.fromRGB(120, 120, 130),
-
-	--	DropdownSelected = Color3.fromRGB(220, 230, 240),
-	--	DropdownUnselected = Color3.fromRGB(200, 210, 220),
-
-	--	InputBackground = Color3.fromRGB(220, 230, 240),
-	--	InputStroke = Color3.fromRGB(180, 190, 200),
-	--	PlaceholderColor = Color3.fromRGB(150, 150, 150)
-	--})
-
 	local Keybind = Tab:CreateKeybind({
 		Name = "Keybind Example",
 		CurrentKeybind = "Q",
 		HoldToInteract = false,
 		Flag = "Keybind1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 		Callback = function(Keybind)
+			-- The function that takes place when the keybind is pressed
+			-- The variable (Keybind) is a boolean for whether the keybind is being held or not (HoldToInteract needs to be true)
 		end,
 	})
 
@@ -3879,9 +3864,15 @@ if CEnabled and Main:FindFirstChild('Notice') then
 	Main.Notice.Size = UDim2.new(0, 0, 0, 0)
 	Main.Notice.Position = UDim2.new(0.5, 0, 0, -100)
 	Main.Notice.Visible = true
+
+
 	TweenService:Create(Main.Notice, TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 280, 0, 35), Position = UDim2.new(0.5, 0, 0, -50), BackgroundTransparency = 0.5}):Play()
 	TweenService:Create(Main.Notice.Title, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {TextTransparency = 0.1}):Play()
 end
+
+-- if not useStudio then
+-- 	task.spawn(loadWithTimeout, "https://raw.githubusercontent.com/SiriusSoftwareLtd/Sirius/refs/heads/request/boost.lua")
+-- end
 
 task.delay(4, function()
 	RayfieldLibrary.LoadConfiguration()
