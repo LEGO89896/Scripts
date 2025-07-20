@@ -2630,7 +2630,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			return InputSettings
 		end
 
-		function Tab:CreateDropdown(DropdownSettinRayfieldgs)
+		function Tab:CreateDropdown(DropdownSettings)
 			local Dropdown = Elements.Template.Dropdown:Clone()
 			if string.find(DropdownSettings.Name,"closed") then
 				Dropdown.Name = "Dropdown"
