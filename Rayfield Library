@@ -3370,7 +3370,13 @@ function RayfieldLibrary:CreateWindow(Settings)
 					end
 				end)
 			end)
-
+			
+			function SliderSettings:SetRange(Value1, Value2)
+				SliderSettings.Range[1] = Value1
+				SliderSettings.Range[2] = Value2
+				SliderSettings.CurrentValue = 0
+			end
+			
 			function SliderSettings:Set(NewVal)
 				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
 
