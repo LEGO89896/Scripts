@@ -3371,11 +3371,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end)
 			end)
 			
-			function SliderSettings:SetRange(Value1, Value2)
-				SliderSettings.Range[1] = Value1
-				SliderSettings.Range[2] = Value2
-				SliderSettings.CurrentValue = 0
-			end
+			
 			
 			function SliderSettings:Set(NewVal)
 				local NewVal = math.clamp(NewVal, SliderSettings.Range[1], SliderSettings.Range[2])
@@ -3404,7 +3400,54 @@ function RayfieldLibrary:CreateWindow(Settings)
 					SaveConfiguration()
 				end
 			end
-
+			
+			function SliderSettings:SetRange(NewMin, NewMax)
+				NewMin = tonumber(NewMin)
+				NewMax = tonumber(NewMax)
+			
+				if not NewMin or not NewMax or NewMin >= NewMax then
+					warn("Invalid range values passed to SetRange")
+					return
+				end
+			
+				SliderSettings.Range[1] = NewMin
+				SliderSettings.Range[2] = NewMax
+			
+				-- Clamp current value to new range
+				local NewValue = math.clamp(SliderSettings.CurrentValue, NewMin, NewMax)
+				SliderSettings.CurrentValue = NewValue
+			
+				-- Update slider visuals
+				local Relative = (NewValue - NewMin) / (NewMax - NewMin)
+				local SizeX = Slider.Main.AbsoluteSize.X * Relative
+				SizeX = math.max(SizeX, 5)
+			
+				TweenService:Create(Slider.Main.Progress, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {
+					Size = UDim2.new(0, SizeX, 1, 0)
+				}):Play()
+			
+				Slider.Main.Information.Text = tostring(NewValue) .. " " .. (SliderSettings.Suffix or "")
+			
+				local Success, Response = pcall(function()
+					SliderSettings.Callback(NewValue)
+				end)
+			
+				if not Success then
+					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
+					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
+					Slider.Title.Text = "Callback Error"
+					print("Rayfield | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
+					task.wait(0.5)
+					Slider.Title.Text = SliderSettings.Name
+					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
+				end
+			
+				if not SliderSettings.Ext then
+					SaveConfiguration()
+				end
+			end
+			
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and SliderSettings.Flag then
 					RayfieldLibrary.Flags[SliderSettings.Flag] = SliderSettings
