@@ -3164,7 +3164,9 @@ function RayfieldLibrary:CreateWindow(Settings)
 					SaveConfiguration()
 				end
 			end)
-
+			function ToggleSettings:Get()
+				return ToggleSettings.CurrentValue
+			end
 			function ToggleSettings:Set(NewToggleValue)
 				if NewToggleValue == true then
 					ToggleSettings.CurrentValue = true
