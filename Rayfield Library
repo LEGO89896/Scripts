@@ -2085,7 +2085,15 @@ function RayfieldLibrary:CreateWindow(Settings)
 		        Button = nil
 		    end
 		end
-			
+			function ButtonValue:GetButton()
+
+			    if Button then
+
+			        return Button
+
+			    end
+
+		    end
 			function ButtonValue:Set(NewButton)
 				Button.Title.Text = NewButton
 				Button.Name = NewButton
