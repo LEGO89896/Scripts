@@ -2100,7 +2100,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 				TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
 				TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 0.9}):Play()
 			end)
-
+			
+			function ButtonValue:Destroy()
+				Button:Destroy()
+			end
+			
 			function ButtonValue:Set(NewButton)
 				Button.Title.Text = NewButton
 				Button.Name = NewButton
@@ -2381,7 +2385,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			Section.Title.TextTransparency = 1
 			TweenService:Create(Section.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0.4}):Play()
-
+			
+			function SectionValue:Destroy()
+				Section:Destroy()
+			end
+			
 			function SectionValue:Set(NewSection)
 				Section.Title.Text = NewSection
 			end
