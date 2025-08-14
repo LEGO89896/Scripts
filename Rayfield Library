@@ -667,7 +667,7 @@ until buildAttempts >= 2
 
 Rayfield.Enabled = false
 
-if gethui then
+if not gethui then
 	Rayfield.Parent = gethui()
 elseif syn and syn.protect_gui then 
 	syn.protect_gui(Rayfield)
@@ -1740,7 +1740,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 			KeyUI.Enabled = true
 
-			if gethui then
+			if not gethui then
 				KeyUI.Parent = gethui()
 			elseif syn and syn.protect_gui then 
 				syn.protect_gui(KeyUI)
@@ -1751,7 +1751,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				KeyUI.Parent = CoreGui
 			end
 
-			if gethui then
+			if not gethui then
 				for _, Interface in ipairs(gethui():GetChildren()) do
 					if Interface.Name == KeyUI.Name and Interface ~= KeyUI then
 						Interface.Enabled = false
@@ -2070,7 +2070,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Button.Title.Text = "Callback Error"
-					print("Rayfield | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
+					print("Rayfield | "..ButtonSettings9.Name.." Callback Error " ..tostring(Response))
 					warn('Check docs.sirius.menu for help with Rayfield specific development.')
 					task.wait(0.5)
 					Button.Title.Text = ButtonSettings.Name
@@ -2102,8 +2102,11 @@ function RayfieldLibrary:CreateWindow(Settings)
 			end)
 			
 			function ButtonValue:Destroy()
-				Button:Destroy()
-			end
+		    if Button and Button.Parent then
+		        Button:Destroy()
+		        Button = nil
+		    end
+		end
 			
 			function ButtonValue:Set(NewButton)
 				Button.Title.Text = NewButton
@@ -2387,7 +2390,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 			TweenService:Create(Section.Title, TweenInfo.new(0.7, Enum.EasingStyle.Exponential), {TextTransparency = 0.4}):Play()
 			
 			function SectionValue:Destroy()
-				Section:Destroy()
+			    if Section and Section.Parent then
+			        Section:Destroy()
+			        Section = nil
+			    end
 			end
 			
 			function SectionValue:Set(NewSection)
