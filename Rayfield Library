@@ -3596,11 +3596,11 @@ function RayfieldLibrary:IsVisible(): boolean
 	return not Hidden
 end
 
-function RayfieldLibrawry:GetEnable()
+function RayfieldLibrary:GetEnable()
 	return Rayfield.Enabled
 end
 
-function RayfieldLibrawry:GetParent()
+function RayfieldLibrary:GetParent()
 	return Rayfield
 end
 
