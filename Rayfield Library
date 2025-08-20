@@ -3596,6 +3596,18 @@ function RayfieldLibrary:IsVisible(): boolean
 	return not Hidden
 end
 
+function RayfieldLibrawry:GetEnabled()
+	return Rayfield.Enabled
+end
+
+function RayfieldLibrawry:GetParent()
+	return Rayfield
+end
+
+function RayfieldLibrary:SetEnabled(Value)
+	Rayfield.Enabled = Value
+end
+
 local hideHotkeyConnection -- Has to be initialized here since the connection is made later in the script
 function RayfieldLibrary:Destroy()
 	rayfieldDestroyed = true
