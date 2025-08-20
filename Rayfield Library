@@ -1541,7 +1541,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			Rayfield.Loading.Visible = false
 		end
 	end
-
+	Rayfield.Name = Settings.FileName
 	if getgenv then getgenv().rayfieldCached = true end
 
 	if not correctBuild and not Settings.DisableBuildWarnings then
@@ -3596,7 +3596,7 @@ function RayfieldLibrary:IsVisible(): boolean
 	return not Hidden
 end
 
-function RayfieldLibrawry:GetEnabled()
+function RayfieldLibrawry:GetEnable()
 	return Rayfield.Enabled
 end
 
@@ -3604,7 +3604,7 @@ function RayfieldLibrawry:GetParent()
 	return Rayfield
 end
 
-function RayfieldLibrary:SetEnabled(Value)
+function RayfieldLibrary:SetEnable(Value)
 	Rayfield.Enabled = Value
 end
 
