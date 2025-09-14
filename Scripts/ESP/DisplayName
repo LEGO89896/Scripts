@@ -1,0 +1,111 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local EspName = "ED"
+
+local CharacterConnections = {}
+local NewPlayers = {}
+local RenderConnections = {}
+local PlayerAddedConnection = nil
+
+local RunEspHealth = {}
+
+function CreateEspDisplayName(player, Color)
+	if not player.Character then return end
+	local head = player.Character:FindFirstChild("Head")
+	local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+	if not head or not humanoid then return end
+
+	local oldGui = head:FindFirstChild(EspName)
+	if oldGui then oldGui:Destroy() end
+
+	local BillboardGui = Instance.new("BillboardGui")
+	BillboardGui.Name = EspName
+	BillboardGui.Size = UDim2.new(0, 100, 0, 20)
+	BillboardGui.Adornee = head
+	BillboardGui.AlwaysOnTop = true
+	BillboardGui.Parent = head
+
+	local Name = Instance.new("TextLabel")
+	Name.Size = UDim2.new(1, 0, 1, 0)
+	Name.BackgroundTransparency = 1
+	Name.TextColor3 = Color
+	Name.TextStrokeTransparency = 0.5
+	Name.TextStrokeColor3 = Color3.new(0, 0, 0)
+	Name.Text = math.floor(humanoid.Health)
+	Name.Font = Enum.Font.SourceSansBold
+	Name.TextSize = 14
+	Name.TextScaled = true
+	Name.Parent = BillboardGui
+
+	if RenderConnections[player] then
+		RenderConnections[player]:Disconnect()
+	end
+
+	RenderConnections[player] = RunService.RenderStepped:Connect(function()
+		if player.Character and player.Character:FindFirstChild("Humanoid") then
+			Name.Text = player.DisplayName
+		else
+			Name.Text = "N/A"
+		end
+	end)
+end
+
+function RunEspHealth:On(Color)
+	for _, player in pairs(Players:GetPlayers()) do
+		if player ~= LocalPlayer then
+			CreateEspDisplayName(player, Color)
+
+			if CharacterConnections[player] then
+				CharacterConnections[player]:Disconnect()
+			end
+
+			CharacterConnections[player] = player.CharacterAdded:Connect(function()
+				task.wait(1)
+				CreateEspDisplayName(player, Color)
+			end)
+		end
+	end
+
+	PlayerAddedConnection = Players.PlayerAdded:Connect(function(plr)
+		NewPlayers[plr] = plr.CharacterAdded:Connect(function()
+			task.wait(1)
+			CreateEspDisplayName(plr, Color)
+		end)
+	end)
+end
+
+function RunEspHealth:Off()
+	for _, player in pairs(Players:GetPlayers()) do
+		local character = player.Character
+		if character and character:FindFirstChild("Head") then
+			local head = character.Head
+			local esp = head:FindFirstChild(EspName)
+			if esp then
+				esp:Destroy()
+			end
+		end
+
+		if CharacterConnections[player] then
+			CharacterConnections[player]:Disconnect()
+			CharacterConnections[player] = nil
+		end
+
+		if RenderConnections[player] then
+			RenderConnections[player]:Disconnect()
+			RenderConnections[player] = nil
+		end
+	end
+
+	for plr, conn in pairs(NewPlayers) do
+		if conn then conn:Disconnect() end
+		NewPlayers[plr] = nil
+	end
+
+	if PlayerAddedConnection then
+		PlayerAddedConnection:Disconnect()
+		PlayerAddedConnection = nil
+	end
+end
+
+return RunEspHealth
