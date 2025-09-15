@@ -1,1 +1,0 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/BG-Home-Official/Script/refs/heads/main/Noob1"))()
