@@ -3690,7 +3690,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 		
 		local TabPage = Instance.new("Frame")
 		TabPage.Name = "Frame"
-		TabPage.Parent = game:GetService("CoreGui").UnHub.Main.Elements
+		TabPage.Parent = Rayfield.Main.Elements
 		TabPage.Position = UDim2.new(0.5, 0, 0.5, 0)
 		TabPage.Size = UDim2.new(1, -25, 1, 0)
 		TabPage.AnchorPoint = Vector2.new(0.5, 0.5)
