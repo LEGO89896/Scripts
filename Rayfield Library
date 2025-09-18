@@ -4545,6 +4545,10 @@ function RayfieldLibrary:CreateWindow(Settings)
 				Paragraph.BackgroundColor3 = SelectedTheme.SecondaryElementBackground
 				Paragraph.UIStroke.Color = SelectedTheme.SecondaryElementStroke
 			end)
+			
+			function ParagraphValue:GetDestroy()
+				Paragraph:Destroy()
+			end
 
 			return ParagraphValue
 		end
