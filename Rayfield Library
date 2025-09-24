@@ -3332,6 +3332,15 @@ function RayfieldLibrary:CreateWindow(Settings)
 			function ToggleSettings:Get()
 				return ToggleSettings.CurrentValue
 			end
+			
+			function ToggleSettings:GetToggle()
+				return Toggle
+			end
+			
+			function ToggleSettings:Destroy()
+				Toggle:Destroy()
+			end
+			
 			function ToggleSettings:Set(NewToggleValue)
 				if NewToggleValue == true then
 					ToggleSettings.CurrentValue = true
@@ -5179,6 +5188,14 @@ function RayfieldLibrary:CreateWindow(Settings)
 			end)
 			function ToggleSettings:Get()
 				return ToggleSettings.CurrentValue
+			end
+			
+			function ToggleSettings:GetToggle()
+				return Toggle
+			end
+			
+			function ToggleSettings:Destroy()
+				Toggle:Destroy()
 			end
 			function ToggleSettings:Set(NewToggleValue)
 				if NewToggleValue == true then
